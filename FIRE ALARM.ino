@@ -1,6 +1,7 @@
 #include <Wire.h>              //library for lcd display
 #include <LiquidCrystal_I2C.h> //library for I2C moudle 
 #include "DHT.h"               //library for DHT11 temperature and humidity sensor
+#include <arduino-timer.h>
 
 #define DHTPIN 7
 #define DHTTYPE DHT11 
@@ -17,6 +18,14 @@ int redled = 3;
 int buzzer = 4;
 int smokeSensor = A0;
 int sensorLimit = 550;
+
+//Alarm and Timer varialbles
+bool AlarmStart=false;
+bool AlarmStop=false;
+//vars to known if the button is pressed
+int buttonStateStart = 0;
+int buttonStateStop = 0;
+Timer<10, millis, bool> timer;//var to hold function to be called back 
 
 void setup() 
 {
