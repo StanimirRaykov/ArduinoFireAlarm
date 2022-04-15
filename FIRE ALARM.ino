@@ -8,8 +8,10 @@ DHT dht(DHTPIN, DHTTYPE);
 
 LiquidCrystal_I2C lcd(0x27,20,4);//initialize display
 
+int buttonStartAlarm = 5;     // the number of the pin of the start alarm button
+int buttonStopAlarm = 6;     // the number of the pin of the stop alarm button
 int potPin = A2; // Potentiometer output connected to analog pin 2
-int potVal = 600; // Variable to store the input from the potentiometer
+int potVal = 550; // Variable to store the input from the potentiometer
 int greenled = 2;
 int redled = 3;
 int buzzer = 4;
@@ -27,12 +29,16 @@ void setup()
   pinMode(greenled, OUTPUT);
   pinMode(redled,OUTPUT);
   pinMode(buzzer,OUTPUT);
+  pinMode(buttonStartAlarm, INPUT);
+  pinMode(buttonStopAlarm, INPUT);
   pinMode(smokeSensor,INPUT);
   Serial.begin(9600); //serial monitor only for testing
 }
 
 void loop() 
 {
+  buttonState = digitalRead(buttonStartAlarm);//get the value of the start button
+  buttonState = digitalRead(buttonStopAlarm);//get the value of the stop button
   potVal = analogRead(potPin);
   if(potVal>sensorLimit+10 || potVal<sensorLimit-10){//check if the potentiometer valued is moved over 10, otherwise it costantly sees change 
     sensorLimit=potVal;//if there is more than 10 difference, make the sensor limit as much as the potentiometer value
@@ -73,7 +79,7 @@ void loop()
   }
   else
   {
-    if(gasLevel > sensorLimit || temp>35) //checks the temperature and gas level and if needed starts the fire alarm
+    if(gasLevel > sensorLimit || temp>35 || buttonStartAlarm==HIGH) //checks the temperature and gas level and if needed starts the fire alarm
     {
       lcd.clear();
       lcd.setCursor(0,0);
@@ -108,7 +114,7 @@ void loop()
       digitalWrite(greenled,HIGH);
       //alarm stop
       noTone(buzzer);
-      delay(1000);
+      delay(500);
     }
   }
 }
