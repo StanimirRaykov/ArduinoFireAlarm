@@ -28,6 +28,14 @@ int buttonStateStop = 0;
 //var to hold function to be called back
 Timer<10, millis, bool> timer; 
 
+void EndButtonTimer(bool isStart){
+  if(isStart){
+    AlarmStart=false;
+  }else{
+    AlarmStop=false;
+  }
+}
+
 //functionallity when there is no fire
 void NormalMode(int temp, int gasLevel){
   lcd.clear();
@@ -84,8 +92,18 @@ void setup()
 
 void loop() 
 {
-  buttonState = digitalRead(buttonStartAlarm);//get the value of the start button
-  buttonState = digitalRead(buttonStopAlarm);//get the value of the stop button
+  timer.tick(); // tick the timer
+  buttonStateStart = digitalRead(buttonStartAlarm);//get the value of the start button
+  buttonStateStop = digitalRead(buttonStopAlarm);//get the value of the stop button
+  if(buttonStateStart==1){
+    AlarmStop=false;
+    AlarmStart=true;
+    timer.in(10000, EndButtonTimer, true)
+  }else if(buttonStateStop==1){
+    AlarmStop=true;
+    AlarmStart=false;
+    timer.in(10000, EndButtonTimer, false)
+  }
   potVal = analogRead(potPin);
   if(potVal>sensorLimit+10 || potVal<sensorLimit-10){//check if the potentiometer valued is moved over 10, otherwise it costantly sees change 
     sensorLimit=potVal;//if there is more than 10 difference, make the sensor limit as much as the potentiometer value
@@ -95,7 +113,7 @@ void loop()
     lcd.setCursor(1,1);
     lcd.print(potVal);
     delay(1000);
-    continue;//skip to see if the value is still being changed
+    return;//skip to see if the value is still being changed
   }
   float temp = dht.readTemperature();  //reads the temperature
   int gasLevel = analogRead(smokeSensor);  //reads the gas level from A0 (analog pin)
@@ -111,7 +129,7 @@ void loop()
     lcd.setCursor(4,1);
     lcd.print("problem!");
     delay(1000);
-    continue;
+    return;
   }
   else if(isnan(gasLevel))  //Check if any reads failed and exit early
   {
@@ -122,11 +140,12 @@ void loop()
     lcd.setCursor(4,1);
     lcd.print("problem!");
     delay(1000);
-    continue;
+    return;
   }
   else
   {
-    if(gasLevel > sensorLimit || temp>35 || buttonStartAlarm==HIGH) //checks the temperature and gas level and if needed starts the fire alarm
+    //checks the temperature and gas level and if needed starts the fire alarm
+    if((gasLevel > sensorLimit || temp>35 || StartAlarm==true) && StopAlarm==false)
     {
       //activate alarm
       AlarmMode();
