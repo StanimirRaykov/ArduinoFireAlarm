@@ -8,6 +8,8 @@ DHT dht(DHTPIN, DHTTYPE);
 
 LiquidCrystal_I2C lcd(0x27,20,4);//initialize display
 
+int potPin = A2; // Potentiometer output connected to analog pin 3
+int potVal = 600; // Variable to store the input from the potentiometer
 int greenled = 2;
 int redled = 3;
 int buzzer = 4;
@@ -31,6 +33,17 @@ void setup()
 
 void loop() 
 {
+  potVal = analogRead(potPin);
+  if(potVal>sensorLimit+10 || potVal<sensorLimit-10){
+    sensorLimit=potVal;
+    lcd.clear();
+    lcd.setCursor(1,0);
+    lcd.print("Treshold:");
+    lcd.setCursor(1,1);
+    lcd.print(potVal);
+    delay(1000);
+    continue;
+  }
   float temp = dht.readTemperature();  //reads the temperature
   int gasLevel = analogRead(smokeSensor);  //reads the gas level from A0 (analog pin)
   lcd.clear();
@@ -39,25 +52,30 @@ void loop()
   if(isnan(temp))  //Check if any reads failed and exit early
   {
     //prints appropriate message on the display
+    lcd.clear();
     lcd.setCursor(3,0);
     lcd.print("Temp sensor");
     lcd.setCursor(4,1);
     lcd.print("problem!");
-    return;
+    delay(1000);
+    continue;
   }
   else if(isnan(gasLevel))  //Check if any reads failed and exit early
   {
     //prints appropriate message on the display
+    lcd.clear();
     lcd.setCursor(4,0);
     lcd.print("Gas sensor");
     lcd.setCursor(4,1);
     lcd.print("problem!");
-    return;
+    delay(1000);
+    continue;
   }
   else
   {
     if(gasLevel > sensorLimit || temp>35) //checks the temperature and gas level and if needed starts the fire alarm
     {
+      lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("ALERT!");
       lcd.setCursor(0,1);
@@ -67,12 +85,15 @@ void loop()
       digitalWrite(greenled,LOW);
       //alarm on
       tone(buzzer, 1000, 10000);
-      delay(100);
-      noTone(buzzer);
-      delay(100);
+      for(int i=0;i<10;i++){
+      	delay(100);
+      	noTone(buzzer);
+      	delay(100);
+      }
     }
     else
     {
+      lcd.clear();
       //live temperature and gas level monitoring
       lcd.setCursor(0,0);    
       lcd.print("Temp: ");
