@@ -28,6 +28,7 @@ int buttonStateStop = 0;
 //var to hold function to be called back
 Timer<10, millis, bool> timer; 
 
+//when the 10 sec end, stop the button effects
 void EndButtonTimer(bool isStart){
   if(isStart){
     AlarmStart=false;
@@ -37,13 +38,14 @@ void EndButtonTimer(bool isStart){
 }
 
 //functionallity when there is no fire
-void NormalMode(int temp, int gasLevel){
+void NormalMode(float temp, int gasLevel){
   lcd.clear();
   //live temperature and gas level monitoring
   lcd.setCursor(0,0);    
   lcd.print("Temp: ");
   lcd.print(temp);
-  lcd.print((char)223);//show the temp with the Celcius sign
+  //show the temp with the Celcius sign
+  lcd.print((char)223);
   lcd.print("C")
   lcd.setCursor(0,1);
   lcd.print("Gas level: ");
@@ -65,9 +67,9 @@ void AlarmMode(){
   //green led OFF, red led ON
   digitalWrite(redled,HIGH);
   digitalWrite(greenled,LOW);
-  //alarm on
-  tone(buzzer, 1000, 10000);
+  //start-stop the buzzer 3 times and delay a bit the alarm
   for(int i=0;i<3;i++){
+    tone(buzzer, 1000, 10000);
     delay(100);
     noTone(buzzer);
     delay(100);
@@ -96,20 +98,24 @@ void loop()
   buttonStateStart = digitalRead(buttonStartAlarm);//get the value of the start button
   buttonStateStop = digitalRead(buttonStopAlarm);//get the value of the stop button
   if(buttonStateStart==1){
+    //will make the alarm start for 10 sec
     AlarmStop=false;
     AlarmStart=true;
     timer.in(10000, EndButtonTimer, true)
   }else if(buttonStateStop==1){
+    //the alarm wont work for 10 sec
     AlarmStop=true;
     AlarmStart=false;
     timer.in(10000, EndButtonTimer, false)
   }
+  //read the potentiometer
   potVal = analogRead(potPin);
   if(potVal>sensorLimit+10 || potVal<sensorLimit-10){//check if the potentiometer valued is moved over 10, otherwise it costantly sees change 
     sensorLimit=potVal;//if there is more than 10 difference, make the sensor limit as much as the potentiometer value
+    //print the new threshold
     lcd.clear();
     lcd.setCursor(1,0);
-    lcd.print("Treshold:");
+    lcd.print("Threshold:");
     lcd.setCursor(1,1);
     lcd.print(potVal);
     delay(1000);
@@ -120,7 +126,7 @@ void loop()
   lcd.clear();
   Serial.print(temp); //using the serial monitor for testing
   Serial.println();
-  if(isnan(temp))  //Check if any reads failed and exit early
+  if(isnan(temp))  //Check if any reads failed and exit early - tempreture sensor
   {
     //prints appropriate message on the display
     lcd.clear();
@@ -131,7 +137,7 @@ void loop()
     delay(1000);
     return;
   }
-  else if(isnan(gasLevel))  //Check if any reads failed and exit early
+  else if(isnan(gasLevel))  //Check if any reads failed and exit early - gas sensor
   {
     //prints appropriate message on the display
     lcd.clear();
