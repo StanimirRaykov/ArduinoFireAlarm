@@ -8,7 +8,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 LiquidCrystal_I2C lcd(0x27,20,4);//initialize display
 
-int potPin = A2; // Potentiometer output connected to analog pin 3
+int potPin = A2; // Potentiometer output connected to analog pin 2
 int potVal = 600; // Variable to store the input from the potentiometer
 int greenled = 2;
 int redled = 3;
@@ -34,15 +34,15 @@ void setup()
 void loop() 
 {
   potVal = analogRead(potPin);
-  if(potVal>sensorLimit+10 || potVal<sensorLimit-10){
-    sensorLimit=potVal;
+  if(potVal>sensorLimit+10 || potVal<sensorLimit-10){//check if the potentiometer valued is moved over 10, otherwise it costantly sees change 
+    sensorLimit=potVal;//if there is more than 10 difference, make the sensor limit as much as the potentiometer value
     lcd.clear();
     lcd.setCursor(1,0);
     lcd.print("Treshold:");
     lcd.setCursor(1,1);
     lcd.print(potVal);
     delay(1000);
-    continue;
+    continue;//skip to see if the value is still being changed
   }
   float temp = dht.readTemperature();  //reads the temperature
   int gasLevel = analogRead(smokeSensor);  //reads the gas level from A0 (analog pin)
@@ -98,7 +98,8 @@ void loop()
       lcd.setCursor(0,0);    
       lcd.print("Temp: ");
       lcd.print(temp);
-      lcd.print((char)223);
+      lcd.print((char)223);//show the temp with the Celcius sign
+      lcd.print("C")
       lcd.setCursor(0,1);
       lcd.print("Gas level: ");
       lcd.print(gasLevel);
