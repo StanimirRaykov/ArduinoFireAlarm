@@ -25,8 +25,46 @@ bool AlarmStop=false;
 //vars to known if the button is pressed
 int buttonStateStart = 0;
 int buttonStateStop = 0;
-Timer<10, millis, bool> timer;//var to hold function to be called back 
+//var to hold function to be called back
+Timer<10, millis, bool> timer; 
 
+//functionallity when there is no fire
+void NormalMode(int temp, int gasLevel){
+  lcd.clear();
+  //live temperature and gas level monitoring
+  lcd.setCursor(0,0);    
+  lcd.print("Temp: ");
+  lcd.print(temp);
+  lcd.print((char)223);//show the temp with the Celcius sign
+  lcd.print("C")
+  lcd.setCursor(0,1);
+  lcd.print("Gas level: ");
+  lcd.print(gasLevel);
+  //green led ON, red led OFF
+  digitalWrite(redled,LOW);
+  digitalWrite(greenled,HIGH);
+  //alarm stop
+  noTone(buzzer);
+  delay(500);  
+}
+//functionallity when the alarm is active
+void AlarmMode(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("ALERT!");
+  lcd.setCursor(0,1);
+  lcd.print("THERE IS A FIRE!");
+  //green led OFF, red led ON
+  digitalWrite(redled,HIGH);
+  digitalWrite(greenled,LOW);
+  //alarm on
+  tone(buzzer, 1000, 10000);
+  for(int i=0;i<3;i++){
+    delay(100);
+    noTone(buzzer);
+    delay(100);
+  }
+}
 void setup() 
 {
   dht.begin(); //turn on temp sensor
@@ -90,40 +128,13 @@ void loop()
   {
     if(gasLevel > sensorLimit || temp>35 || buttonStartAlarm==HIGH) //checks the temperature and gas level and if needed starts the fire alarm
     {
-      lcd.clear();
-      lcd.setCursor(0,0);
-      lcd.print("ALERT!");
-      lcd.setCursor(0,1);
-      lcd.print("THERE IS A FIRE!");
-      //green led OFF, red led ON
-      digitalWrite(redled,HIGH);
-      digitalWrite(greenled,LOW);
-      //alarm on
-      tone(buzzer, 1000, 10000);
-      for(int i=0;i<10;i++){
-      	delay(100);
-      	noTone(buzzer);
-      	delay(100);
-      }
+      //activate alarm
+      AlarmMode();
     }
     else
     {
-      lcd.clear();
-      //live temperature and gas level monitoring
-      lcd.setCursor(0,0);    
-      lcd.print("Temp: ");
-      lcd.print(temp);
-      lcd.print((char)223);//show the temp with the Celcius sign
-      lcd.print("C")
-      lcd.setCursor(0,1);
-      lcd.print("Gas level: ");
-      lcd.print(gasLevel);
-      //green led ON, red led OFF
-      digitalWrite(redled,LOW);
-      digitalWrite(greenled,HIGH);
-      //alarm stop
-      noTone(buzzer);
-      delay(500);
+      //show the normal stats on the lcd
+      NormalMode(temp, gasLevel);
     }
   }
 }
