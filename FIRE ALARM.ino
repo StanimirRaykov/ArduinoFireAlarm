@@ -29,16 +29,22 @@ int buttonStateStop = 0;
 Timer<10, millis, bool> timer; 
 
 //when the 10 sec end, stop the button effects
-void EndButtonTimer(bool isStart){
-  if(isStart){
+bool EndButtonTimer(bool isStart)
+{
+  if(isStart)
+  {
     AlarmStart=false;
-  }else{
+  }
+  else
+  {
     AlarmStop=false;
   }
+  return true;
 }
 
 //functionallity when there is no fire
-void NormalMode(float temp, int gasLevel){
+void NormalMode(float temp, int gasLevel)
+{
   lcd.clear();
   //live temperature and gas level monitoring
   lcd.setCursor(0,0);    
@@ -46,7 +52,7 @@ void NormalMode(float temp, int gasLevel){
   lcd.print(temp);
   //show the temp with the Celcius sign
   lcd.print((char)223);
-  lcd.print("C")
+  lcd.print("C");
   lcd.setCursor(0,1);
   lcd.print("Gas level: ");
   lcd.print(gasLevel);
@@ -68,7 +74,8 @@ void AlarmMode(){
   digitalWrite(redled,HIGH);
   digitalWrite(greenled,LOW);
   //start-stop the buzzer 3 times and delay a bit the alarm
-  for(int i=0;i<3;i++){
+  for(int i=0;i<3;i++)
+  {
     tone(buzzer, 1000, 10000);
     delay(100);
     noTone(buzzer);
@@ -97,16 +104,18 @@ void loop()
   timer.tick(); // tick the timer
   buttonStateStart = digitalRead(buttonStartAlarm);//get the value of the start button
   buttonStateStop = digitalRead(buttonStopAlarm);//get the value of the stop button
-  if(buttonStateStart==1){
+  if(buttonStateStart==1)
+  {
     //will make the alarm start for 10 sec
     AlarmStop=false;
     AlarmStart=true;
-    timer.in(10000, EndButtonTimer, true)
-  }else if(buttonStateStop==1){
+    timer.in(10000, EndButtonTimer, true);
+  }
+  else if(buttonStateStop==1){
     //the alarm wont work for 10 sec
     AlarmStop=true;
     AlarmStart=false;
-    timer.in(10000, EndButtonTimer, false)
+    timer.in(10000, EndButtonTimer, false);
   }
   //read the potentiometer
   potVal = analogRead(potPin);
@@ -151,7 +160,7 @@ void loop()
   else
   {
     //checks the temperature and gas level and if needed starts the fire alarm
-    if((gasLevel > sensorLimit || temp>35 || StartAlarm==true) && StopAlarm==false)
+    if((gasLevel > sensorLimit || temp>35 || AlarmStart==true) && AlarmStop==false)
     {
       //activate alarm
       AlarmMode();
