@@ -1,7 +1,7 @@
 #include <Wire.h>              //library for lcd display
 #include <LiquidCrystal_I2C.h> //library for I2C moudle 
 #include "DHT.h"               //library for DHT11 temperature and humidity sensor
-#include <arduino-timer.h>
+#include <arduino-timer.h>     //library for stop timer
 
 #define DHTPIN 7
 #define DHTTYPE DHT11 
