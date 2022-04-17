@@ -21,15 +21,15 @@
 ### Arduino Uno R3
 ![Arduino Uno R3](Assets/arduino.png)
 ### Smoke sensor
-![Smoke sensor](Assets/gas sensor.png)
+![Smoke sensor](Assets/gas.png)
 ### Tempreture sensor
-![Tempreture sensor](Assets/temp sensor.png)
+![Tempreture sensor](Assets/temp.png)
 ### LCD Display
-![LCD Display](Assets/lcd display.png)
+![LCD Display](Assets/lcd.png)
 ### Potentiometer
 ![Potentiometer](Assets/potentiometer.png)
 ### Buttons
-![Buttons](Assets/button.png)
+![Buttons](Assets/buttons.png)
 ### Buzzer
 ![Buzzer](Assets/buzzer.png)
 ### LEDs
