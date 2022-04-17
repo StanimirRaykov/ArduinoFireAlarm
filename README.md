@@ -19,34 +19,34 @@
 
 ## Компоненти
 ### Arduino Uno R3
-![Arduino Uno R3](Components/Arduino.png)
+![Arduino Uno R3](Assets/arduino.png)
 ### Smoke sensor
-![Smoke sensor](Components/gas.png)
+![Smoke sensor](Assets/gas sensor.png)
 ### Tempreture sensor
-![Tempreture sensor](Components/temp.png)
+![Tempreture sensor](Assets/temp sensor.png)
 ### LCD Display
-![LCD Display](Components/lcd.png)
+![LCD Display](Assets/lcd display.png)
 ### Potentiometer
-![Potentiometer](Components/Pot.png)
+![Potentiometer](Assets/potentiometer.png)
 ### Buttons
-![Buttons](Components/button.png)
+![Buttons](Assets/button.png)
 ### Buzzer
-![Buzzer](Components/buzzer.png)
+![Buzzer](Assets/buzzer.png)
 ### LEDs
-![LEDs](Components/led.png)
+![LEDs](Assets/diodes.png)
 
 ## Описание
 Проектът ни е пожарна аларма, засичаща промени в концентрацията на газове, дим и температура в контролирана среда. За основа използваме Arduino Uno, а към breadboard-a са свързани сензорите за газ и температура, LED диодите, buzzer-a, потенциометърът и бутони за симулация на пожар и рестартиране на алармата. 
-![PicParts](Pics/PicComp.png)
+![PicParts](Assets/Components.png)
 Когато сензорът засече голяма концентрация на газ подава повече волтаж към ардуиното, което го изобразява като числова стойност. Забелязахме, че в различните стаи нормалната концентрация на газове варира, за това добавихме потенциометър, които променя границата на приемливи нива на газ. 
 ![PicThres](Pics/PicParts.jpg)
 За да не трябва да симулираме опасни обстановки по време на тестване, добавихме бутон, който тества алармата, за да видим дали всичко работи нормално. Освен това имаме бутон, който я деактивира за определено време.</br>
 На LCD дисплея постоянно се виждат нивата на температурата и газовете, за да може да се направи преценка дали границата на приемливите нива газ трябва да се променят. 
-![PicNormal](Pics/PicNorm.jpg)
+![PicNormal](Assets/PicNorm.jpg)
 Дисплея показва новото ниво на газ при промяна чрез потенциометъра. Когато алармата се активира светва червения диод, текстът на дисплея се променя за да покаже, че има опасност и buzzer-a издава звуков сигнал. Изключва се когато газът се върне в приемливите граници или се изключи от съответния бутон.
 ## TinkerCad
 Това е електрическата схема на проекта ни. Тя включва вече описаните компоненти. Някои от тях са малко по-различни от физическите компоненти, с които разполагахме и заради това и кода на Tinkercad симулацията е по-различен, но работещ. </br>
-![Scheme](Pics/Thinker.PNG)
+![Scheme](Assets/Thinker.PNG)
 [Линк към проекта](https://www.tinkercad.com/things/73Vmj3uctmr-fire-alarm/editel?sharecode=-ZLLZeEerQ_WBVAjuvz5LY760c4C4uISC7WW1tUkoZA)
 ## Cхема
-![BlockScheme](Pics/Block.png)
+![BlockScheme](Assets/FlowChart.png)
